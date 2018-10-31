@@ -9,7 +9,7 @@ class ServiceProvider extends BaseServiceProvider
 {
     public function boot()
     {
-        $this->publishes([__DIR__ . '../config/idempotency.php' => config_path('idempotency.php')]);
+        $this->publishes([__DIR__ . '/../config/idempotency.php' => config_path('idempotency.php')]);
 
         Request::macro('getIdempotencyKey', function () {
             return $this->header(config('idempotency.header'));
