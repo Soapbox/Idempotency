@@ -6,4 +6,5 @@ return [
         'prefix' => '',
         'ttl' => 1440,
     ],
+    'header' => 'Idempotency-Key',
 ];

@@ -4,7 +4,6 @@ namespace SoapBox\Idempotency;
 
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Contracts\Cache\Repository;
 
 class Idempotency
@@ -16,7 +15,7 @@ class Idempotency
      */
     private static function getCache(): Repository
     {
-        return Cache::store(Config::get('idempotency.cache.store'));
+        return Cache::store(config('idempotency.cache.store'));
     }
 
     /**
@@ -26,7 +25,7 @@ class Idempotency
      */
     private static function getPrefix(): string
     {
-        return Config::get('idempotency.cache.prefix', '');
+        return config('idempotency.cache.prefix', '');
     }
 
     /**
@@ -64,6 +63,6 @@ class Idempotency
             $response->getStatusCode(),
             $response->headers->allPreserveCase(),
         ];
-        self::getCache()->put("{$prefix}{$idempotencyKey}", $cached, Config::get('idempotency.cache.ttl', 1440));
+        self::getCache()->put("{$prefix}{$idempotencyKey}", $cached, config('idempotency.cache.ttl', 1440));
     }
 }

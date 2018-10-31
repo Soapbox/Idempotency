@@ -3,9 +3,9 @@
 namespace SoapBox\Idempotency\Tests\Unit;
 
 use Illuminate\Http\Response;
-use Orchestra\Testbench\TestCase;
 use SoapBox\Idempotency\Idempotency;
 use Illuminate\Support\Facades\Cache;
+use SoapBox\Idempotency\Tests\TestCase;
 use SoapBox\Idempotency\Tests\Doubles\TestCacheStore;
 
 class IdempotencyTest extends TestCase
