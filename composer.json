@@ -6,7 +6,8 @@
     "require": {
         "ramsey/uuid": "^3.8",
         "guzzlehttp/psr7": "^1.4",
-        "illuminate/support": "^5.5"
+        "illuminate/support": "^5.5",
+        "jshayes/fake-requests": "^2.1"
     },
     "autoload": {
         "psr-4": {

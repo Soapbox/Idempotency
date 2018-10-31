@@ -65,4 +65,16 @@ class Idempotency
         ];
         self::getCache()->put("{$prefix}{$idempotencyKey}", $cached, config('idempotency.cache.ttl', 1440));
     }
+
+    /**
+     * Determing if the given request method is a request method that supports idempotency
+     *
+     * @param string $method
+     *
+     * @return bool
+     */
+    public static function supportedRequestMethod(string $method): bool
+    {
+        return in_array(strtolower($method), ['post', 'put', 'patch']);
+    }
 }

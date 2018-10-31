@@ -16,7 +16,7 @@ class ServiceProvider extends BaseServiceProvider
         });
 
         Request::macro('supportsIdempotency', function () {
-            return in_array($this->method(), ['POST', 'PUT', 'PATCH']);
+            return Idempotency::supportedRequestMethod($this->method());
         });
     }
 }
