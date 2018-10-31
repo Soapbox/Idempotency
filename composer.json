@@ -1,0 +1,25 @@
+{
+    "name": "SoapBox/Idempotency",
+    "type": "library",
+    "description": "A Laravel library that manages idempotency keys for a request",
+    "license": "MIT",
+    "require": {
+        "ramsey/uuid": "^3.8",
+        "guzzlehttp/psr7": "^1.4",
+        "illuminate/support": "^5.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "SoapBox\\Idempotency\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SoapBox\\Idempotency\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.4",
+        "orchestra/testbench": "^3.5"
+    }
+}
