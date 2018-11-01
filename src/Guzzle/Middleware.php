@@ -17,13 +17,11 @@ class Middleware
      */
     public function __invoke(callable $handler): callable
     {
-        return function (RequestInterface &$request, array $options) use ($handler) {
+        return function (RequestInterface $request, array $options) use ($handler) {
             if (Idempotency::supportedRequestMethod($request->getMethod())) {
-                $request = $request->withHeader(
-                    config('idempotency.header'),
-                    $request->getHeaderLine(config('idempotency.header')) ?: Uuid::uuid4()
-                );
+                $request = $request->withHeader(config('idempotency.header'), Uuid::uuid4());
             }
+
             return $handler($request, $options);
         };
     }
