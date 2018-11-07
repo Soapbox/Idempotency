@@ -25,8 +25,8 @@ class IdempotencyTest extends TestCase
 
         Idempotency::add('unique-key', new Response());
 
-        $this->assertTrue(Cache::store('store1')->has('unique-key'));
-        $this->assertFalse(Cache::store('store2')->has('unique-key'));
+        $this->assertTrue(Cache::store('store1')->has('idempotency:unique-key'));
+        $this->assertFalse(Cache::store('store2')->has('idempotency:unique-key'));
 
         Cache::store('store1')->flush();
         Cache::store('store2')->flush();
@@ -35,8 +35,8 @@ class IdempotencyTest extends TestCase
 
         Idempotency::add('unique-key', new Response());
 
-        $this->assertFalse(Cache::store('store1')->has('unique-key'));
-        $this->assertTrue(Cache::store('store2')->has('unique-key'));
+        $this->assertFalse(Cache::store('store1')->has('idempotency:unique-key'));
+        $this->assertTrue(Cache::store('store2')->has('idempotency:unique-key'));
     }
 
     /**
@@ -45,12 +45,12 @@ class IdempotencyTest extends TestCase
     public function adding_a_response_to_the_cache_prefixes_the_key_with_the_prefix()
     {
         Idempotency::add('unique-key', new Response());
-        $this->assertTrue(Cache::has('unique-key'));
+        $this->assertTrue(Cache::has('idempotency:unique-key'));
 
         config(['idempotency.cache.prefix' => 'prefix:']);
 
         Idempotency::add('unique-key', new Response());
-        $this->assertTrue(Cache::has('prefix:unique-key'));
+        $this->assertTrue(Cache::has('idempotency:prefix:unique-key'));
     }
 
     /**
@@ -70,7 +70,7 @@ class IdempotencyTest extends TestCase
         });
 
         Idempotency::add('unique-key', new Response());
-        $this->assertSame(60, Cache::store('test')->getTimeToLive('unique-key'));
+        $this->assertSame(60, Cache::store('test')->getTimeToLive('idempotency:unique-key'));
     }
 
     /**
@@ -87,7 +87,7 @@ class IdempotencyTest extends TestCase
         });
 
         Idempotency::add('unique-key', new Response());
-        $this->assertSame(1440, Cache::store('test')->getTimeToLive('unique-key'));
+        $this->assertSame(1440, Cache::store('test')->getTimeToLive('idempotency:unique-key'));
     }
 
     /**
@@ -95,7 +95,7 @@ class IdempotencyTest extends TestCase
      */
     public function it_returns_with_null_when_trying_to_get_a_response_for_a_key_that_is_not_in_the_cache()
     {
-        $this->assertNull(Idempotency::get('unique-key'));
+        $this->assertNull(Idempotency::get('idempotency:unique-key'));
     }
 
     /**

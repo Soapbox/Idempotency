@@ -25,7 +25,7 @@ class Idempotency
      */
     private static function getPrefix(): string
     {
-        return config('idempotency.cache.prefix', '');
+        return 'idempotency:' . config('idempotency.cache.prefix', '');
     }
 
     /**
