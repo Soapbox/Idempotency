@@ -52,6 +52,7 @@ class Idempotency
     public static function add(string $idempotencyKey, Response $response): void
     {
         if (property_exists($response, 'exception')) {
+            $response = clone $response;
             $response->exception = null;
         }
 
