@@ -2,9 +2,9 @@
 
 namespace SoapBox\Idempotency;
 
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Contracts\Cache\Repository;
+use Symfony\Component\HttpFoundation\Response;
 
 class Idempotency
 {
@@ -38,32 +38,26 @@ class Idempotency
     public static function get(string $idempotencyKey): ?Response
     {
         $prefix = self::getPrefix();
-
-        if ($cached = self::getCache()->get("{$prefix}{$idempotencyKey}")) {
-            return new Response(...$cached);
-        }
-
-        return null;
+        return self::getCache()->get("{$prefix}{$idempotencyKey}");
     }
 
     /**
      * Add a response to the cache for the given key
      *
      * @param string $idempotencyKey
-     * @param \Illuminate\Http\Response $response
+     * @param \Symfony\Component\HttpFoundation\Response $response
      *
      * @return void
      */
     public static function add(string $idempotencyKey, Response $response): void
     {
-        $prefix = self::getPrefix();
+        if (property_exists($response, 'exception')) {
+            $response = clone $response;
+            $response->exception = null;
+        }
 
-        $cached = [
-            $response->getContent(),
-            $response->getStatusCode(),
-            $response->headers->allPreserveCase(),
-        ];
-        self::getCache()->put("{$prefix}{$idempotencyKey}", $cached, config('idempotency.cache.ttl', 1440));
+        $prefix = self::getPrefix();
+        self::getCache()->put("{$prefix}{$idempotencyKey}", $response, config('idempotency.cache.ttl', 1440));
     }
 
     /**

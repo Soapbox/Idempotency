@@ -2,14 +2,33 @@
 
 namespace SoapBox\Idempotency\Tests\Unit;
 
+use Exception;
 use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use SoapBox\Idempotency\Idempotency;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use SoapBox\Idempotency\Tests\TestCase;
+use Illuminate\Support\Facades\Validator;
 use SoapBox\Idempotency\Tests\Doubles\TestCacheStore;
+use SoapBox\Idempotency\Tests\Doubles\TestSerializedCacheStore;
 
 class IdempotencyTest extends TestCase
 {
+    private function withSerializableCache()
+    {
+        config([
+            'idempotency.cache' => [
+                'ttl' => 60,
+                'store' => 'serialize',
+            ],
+            'cache.stores' => ['serialize' => ['driver' => 'serialize']],
+        ]);
+        Cache::extend('serialize', function ($app) {
+            return Cache::repository(new TestSerializedCacheStore());
+        });
+    }
+
     /**
      * @test
      */
@@ -146,5 +165,73 @@ class IdempotencyTest extends TestCase
 
         config(['idempotency.cache.prefix' => '']);
         $this->assertNull(Idempotency::get('unique-key'));
+    }
+
+    /**
+     * @test
+     */
+    public function getting_a_response_from_the_cache_returns_an_equivalent_response_after_serialization()
+    {
+        $this->withSerializableCache();
+
+        $response = new Response('content');
+        $response->headers->set('Header', 'Value');
+
+        Idempotency::add('unique-key', $response);
+        $newResponse = Idempotency::get('unique-key');
+
+        $this->assertSame((string) $response, (string) $newResponse);
+    }
+
+    /**
+     * @test
+     */
+    public function getting_a_json_response_from_the_cache_returns_an_equivalent_response_after_serialization()
+    {
+        $this->withSerializableCache();
+
+        $response = new JsonResponse('content');
+        $response->headers->set('Header', 'Value');
+
+        Idempotency::add('unique-key', $response);
+        $newResponse = Idempotency::get('unique-key');
+
+        $this->assertSame((string) $response, (string) $newResponse);
+    }
+
+    /**
+     * @test
+     */
+    public function getting_a_redirect_response_from_the_cache_returns_an_equivalent_response_after_serialization()
+    {
+        $this->withSerializableCache();
+
+        $response = new RedirectResponse('http://google.ca');
+        $response->headers->set('Header', 'Value');
+
+        Idempotency::add('unique-key', $response);
+        $newResponse = Idempotency::get('unique-key');
+
+        $this->assertSame((string) $response, (string) $newResponse);
+    }
+
+    /**
+     * @test
+     */
+    public function it_correctly_serialized_a_response_that_has_an_exception_that_cannot_be_serialized_attached_to_it()
+    {
+        $this->withSerializableCache();
+
+        try {
+            Validator::make([], ['test' => 'required'])->validate();
+        } catch (Exception $e) {
+            $response = new Response();
+            $response->withException($e);
+        }
+
+        Idempotency::add('unique-key', $response);
+        $newResponse = Idempotency::get('unique-key');
+
+        $this->assertSame((string) $response, (string) $newResponse);
     }
 }
