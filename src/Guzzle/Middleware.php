@@ -9,7 +9,7 @@ use Psr\Http\Message\RequestInterface;
 class Middleware
 {
     /**
-     * Invokes the logger middleware.
+     * Invokes the idempotency middleware.
      *
      * @param callable $handler
      *
