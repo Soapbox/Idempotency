@@ -89,7 +89,7 @@ class IdempotencyTest extends TestCase
         });
 
         Idempotency::add('unique-key', new Response());
-        $this->assertSame(60, Cache::store('test')->getTimeToLive('idempotency:unique-key'));
+        $this->assertSame(3600, Cache::store('test')->getTimeToLive('idempotency:unique-key'));
     }
 
     /**
@@ -106,7 +106,7 @@ class IdempotencyTest extends TestCase
         });
 
         Idempotency::add('unique-key', new Response());
-        $this->assertSame(1440, Cache::store('test')->getTimeToLive('idempotency:unique-key'));
+        $this->assertSame(86400, Cache::store('test')->getTimeToLive('idempotency:unique-key'));
     }
 
     /**

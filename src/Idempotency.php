@@ -2,6 +2,7 @@
 
 namespace SoapBox\Idempotency;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Contracts\Cache\Repository;
 use Symfony\Component\HttpFoundation\Response;
@@ -57,7 +58,8 @@ class Idempotency
         }
 
         $prefix = self::getPrefix();
-        self::getCache()->put("{$prefix}{$idempotencyKey}", $response, config('idempotency.cache.ttl', 1440));
+        $ttl = Carbon::now()->addMinutes(config('idempotency.cache.ttl', 1440));
+        self::getCache()->put("{$prefix}{$idempotencyKey}", $response, $ttl);
     }
 
     /**
