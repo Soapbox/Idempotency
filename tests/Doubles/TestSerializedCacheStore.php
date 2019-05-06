@@ -14,8 +14,7 @@ class TestSerializedCacheStore extends ArrayStore
      */
     public function get($key)
     {
-        $value = $this->storage[$key] ?? null;
-
+        $value = $this->storage[$key]['value'] ?? null;
         return $value ? unserialize($value) : null;
     }
 
