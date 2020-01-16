@@ -19,7 +19,10 @@ class Middleware
     {
         return function (RequestInterface $request, array $options) use ($handler) {
             if (Idempotency::supportedRequestMethod($request->getMethod())) {
-                $request = $request->withHeader(config('idempotency.header'), Uuid::uuid4());
+                $request = $request->withHeader(
+                	config('idempotency.header'),
+                	Uuid::uuid4()->toString()
+                );
             }
 
             return $handler($request, $options);
