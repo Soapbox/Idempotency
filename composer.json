@@ -3,18 +3,17 @@
     "type": "library",
     "description": "A Laravel library that manages idempotency keys for a request",
     "license": "MIT",
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../fake-requests"
-        }
-      ],
     "require": {
         "ramsey/uuid": "^3.8",
         "guzzlehttp/psr7": "^1.4",
         "illuminate/support": "^7.0"
     },
-    
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Soapbox/fake-requests"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "SoapBox\\Idempotency\\": "src/"
