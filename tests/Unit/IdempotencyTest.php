@@ -101,7 +101,7 @@ class IdempotencyTest extends TestCase
             'idempotency.cache.store' => 'test',
             'cache.stores' => ['test' => ['driver' => 'test']],
         ]);
-        Cache::extend('test', function ($app) {
+        Cache::extend('test', function () {
             return Cache::repository(new TestCacheStore());
         });
 
